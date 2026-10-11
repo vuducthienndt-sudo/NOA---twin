@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cai MuseTalk 1.5 vao Network Volume (/workspace) voi dung bo phien ban upstream.
-# Chay 1 lan. Phan cai dat KHONG can GPU: chay tren Pod CPU re hoac Pod GPU,
+# Can ~20GB trong, volume 30GB phai trong (xoa venv cu truoc khi chay). Chay 1 lan. Phan cai dat KHONG can GPU: chay tren Pod CPU re hoac Pod GPU,
 # Chay duoc tren moi template Pod (Python 3.10 va torch 2.0.1 duoc cai rieng trong venv).
 set -euo pipefail
 
@@ -29,13 +29,18 @@ mim install "mmcv==2.0.1"
 mim install "mmdet==3.1.0"
 mim install "mmpose==1.1.0"
 
+# Cac goi sau bi pip nang nham/hong khi cai, ep ve dung ban da kiem chung chay duoc
+pip install huggingface_hub==0.30.2
+pip install --force-reinstall --no-deps opencv-python==4.9.0.80
+apt-get install -y -qq libgl1 libglib2.0-0 >/dev/null
+
 # Trong luong model (khong can GPU)
 cd "$APP"
 sh ./download_weights.sh
 
 # Kiem tra: in phien ban + file model can thiet. Khong chay inference.
 python - <<'PY'
-import torch, mmcv, mmpose, os
+import torch, mmcv, mmpose, cv2, os
 print("torch", torch.__version__, "cuda build", torch.version.cuda,
       "cuda available", torch.cuda.is_available())
 print("mmcv", mmcv.__version__, "mmpose", mmpose.__version__)
