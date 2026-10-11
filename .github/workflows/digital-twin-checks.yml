@@ -1,0 +1,28 @@
+name: Digital Twin CPU Checks
+
+on:
+  push:
+    branches: [feature/digital-twin-v1]
+    paths:
+      - 'digital_twin/**'
+      - '.github/workflows/digital-twin-checks.yml'
+  pull_request:
+    paths:
+      - 'digital_twin/**'
+      - '.github/workflows/digital-twin-checks.yml'
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU dependencies
+        run: pip install -r digital_twin/requirements-references.txt -r digital_twin/requirements-api.txt
+      - name: Compile Python modules
+        run: python -m compileall -q digital_twin
+      - name: Run synthetic QA and adapter tests
+        run: python -m unittest discover -s digital_twin -p 'test_*.py' -v

@@ -1,0 +1,17 @@
+{
+  "service": "noa-digital-twin",
+  "version": "0.1",
+  "deployment": "independent",
+  "repository_target": "NOA-Digital-Twin",
+  "consumers": [
+    {"name": "NOA Studio", "use_case": "asynchronous video production"},
+    {"name": "NOA Person", "use_case": "virtual person video generation"}
+  ],
+  "current_backend": "musetalk-v1.5-cli-adapter",
+  "gpu_job_mode": "not_deployed",
+  "api_contract": "API_CONTRACT.md",
+  "limits": {
+    "initial_gpu_test_budget_vnd": 200000,
+    "monthly_budget_target_vnd": 1000000
+  }
+}
